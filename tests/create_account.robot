@@ -1,5 +1,5 @@
 *** Settings ***
-Library            QForce
+Library            QForce                #For using REST API, use the QForce library's REST API keywprds.
 Library            DataDriver            reader_class=TestDataApi    name=Leads__1_.xlsx
 
 Suite Setup       Open Browser            about:blank                 Chrome
@@ -7,7 +7,7 @@ Suite Teardown    Close All Browsers
 Test Template     Create Lead with REST API
 
 *** Test Cases ***
-Example Test with ${last_name} ${first_name} ${salutation}
+Create Lead with ${last_name} ${first_name} ${salutation}
 
 *** Keywords ***
 Create Lead with REST API
@@ -27,6 +27,8 @@ Create Lead with REST API
                     ...                                   Company=${company}
                     ...                                   Email=${email}
 
-    Log             ${new_lead}                           console=true                 
+    Log             ${new_lead}                           console=true      
+
+    Revoke           
 
   
