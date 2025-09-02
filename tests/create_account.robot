@@ -26,6 +26,7 @@ Create Lead with REST API
                     ...                                   salutation=${salutation}
                     ...                                   Company=${company}
                     ...                                   Email=${email}
+                    ...                                   ProductInterest__c=Sales Cloud Implementation
 
     Log             ${new_lead}                           console=true      
 
