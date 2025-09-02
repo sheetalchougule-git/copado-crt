@@ -1,47 +1,43 @@
 *** Settings ***
-Library                   QWeb
-Library                   QForce
-Library                   String
 
+Documentation           Example on how to use QForce REST API keywords
+Library                 QForce
+Library                 QWeb
 
 *** Variables ***
-${home_url}               ${sfdc_login_url}/lightning/page/home
+${BROWSER}                chrome
+${mfa}                    ${FALSE}                # True -> Run with App authentication.
 
 
 *** Keywords ***
 Setup Browser
-    Set Library Search Order                          QWeb                   QForce
-    Open Browser          about:blank                 chrome
+    Open Browser          about:blank                 ${BROWSER}
     SetConfig             LineBreak                   ${EMPTY}               #\ue000
-    SetConfig             DefaultTimeout              20s                    #sometimes salesforce is slow
-
+    SetConfig             DefaultTimeout              30s                    #sometimes salesforce is slow
+    SetConfig             CSSSelectors                False    
 
 End suite
-    Set Library Search Order                          QWeb                   QForce
     Close All Browsers
 
 
 Login
-    [Documentation]       Login to Salesforce instance
-    Set Library Search Order                          QWeb                   QForce
-    GoTo                  ${sfdc_login_url}
-    TypeText              Username                    ${sfdc_username}             delay=1
-    TypeText              Password                    ${sfdc_password}
-    ClickText             Log In
+    [Documentation]      Login to Salesforce instance
+    GoTo                 ${login_url}
+    TypeText             Username                    ${username}
+    TypeSecret           Password                    ${password}
+    ClickText            Log In
+    Run Keyword If       ${mfa}                      Fill MFA
 
-Logout From Salesforce
-    [Documentation]    Logs out from the current Salesforce session
-    # Click on the user profile/avatar icon in the top right corner
-    ClickText           View profile
-    
-    # Click on the Logout option from the dropdown menu
-    ClickText           Log Out
+
+Fill MFA
+    ${mfa_code}=         GetOTP    ${username}   ${secret}   ${login_url}    
+    TypeSecret           Verification Code       ${mfa_code}      
+    ClickText            Verify 
+
 
 Home
-    [Documentation]       Navigate to homepage, login if needed
-    Set Library Search Order                          QWeb                   QForce
-    GoTo                  ${home_url}
-    ${login_status} =     IsText                      To access this page, you have to log in to Salesforce.    2
-    Run Keyword If        ${login_status}             Login
-    ClickText             Home
-    VerifyTitle           Home | Salesforce
+    GoTo                 ${login_url}lightning/page/home  
+    ${login_status} =    IsText                      To access this page, you have to log in to Salesforce.    2
+    Run Keyword If       ${login_status}             Login            
+    ClickText            Home
+    VerifyTitle          Home | Salesforce
