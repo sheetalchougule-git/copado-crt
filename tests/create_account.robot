@@ -24,7 +24,7 @@ Create New Account via REST API
    
     # Create Account Record 
     ${my_account}=                         CreateRecord     Account                          Name=Rest Account Test
-    Should Be Equal As Strings                              ${my_account}[Name]              Rest Account Test            #validating the name match from my_account and the name we provided
+    Should Be Equal As Strings                              ${my_account}\[Name]              Rest Account Test            #validating the name match from my_account and the name we provided
 
     #Create contact
     ${my_contact}                          CreateRecord      Contact                         FirstName = Jane    LastName=Roberts      
