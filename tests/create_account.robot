@@ -1,6 +1,7 @@
 *** Settings ***
 Library            QForce                #For using REST API, use the QForce library's REST API keywprds.
 Library            DataDriver            reader_class=TestDataApi    name=Leads__1_.xlsx
+Resource           ../resources/common.resource
 
 Suite Setup       Open Browser            about:blank                 Chrome
 Suite Teardown    Close All Browsers
