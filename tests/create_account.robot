@@ -21,3 +21,23 @@ Create New Account via REST API
     # in addition to user credential
     
     Authenticate           ${client_id}    ${client_secret}    ${username}    ${password}    sandbox=false
+   
+    # Create Account Record 
+    ${my_account}=                         CreateRecord     Account                          Name=Rest Account Test
+    Should Be Equal As Strings                              ${my_account}[Name]              Rest Account Test
+
+    #Create contact
+    ${my_contact}                          CreateRecord      Contact                         FirstName = Jane    LastName=Roberts      
+
+    # Id is stored in these variables
+    # Set these on suite level for reuse
+    Set Suite Variable                     ${my_account}
+    Set Suite Variable                     ${my_contact}
+    
+Get Record Create
+    [Documentation]                        Retrive the record created
+    [tags]                                 REST API                                        GET
+    
+    ${new_account}=                        GetRecord        Account                         ${my_account}
+    Should Be Equal As Strings                              ${new_account}[Name]            Rest Account Test
+    Log                                    ${new_account}          
