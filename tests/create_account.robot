@@ -20,6 +20,13 @@ Create Lead with REST API
     # VerifyText    ${company}
     # VerifyText    ${phone}
 
-    Authenticate                   ${client_id}     ${client_secret}     ${username}      ${password}      sandbox=false                   
+    Authenticate    ${client_id}     ${client_secret}     ${username}      ${password}      sandbox=false 
+    ${new_lead}=    CreateRecord     Lead                 LastName=${last_name}
+                    ...                                   FirstName=${first_name}    
+                    ...                                   salutation=${salutation}
+                    ...                                   Company=${company}
+                    ...                                   Email=${email}
+
+    Log             ${new_lead}                           console=true                 
 
   
