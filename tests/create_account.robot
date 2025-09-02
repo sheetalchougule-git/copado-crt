@@ -24,7 +24,7 @@ Create New Account via REST API
    
     # Create Account Record 
     ${my_account}=                         CreateRecord     Account                          Name=Rest Account Test
-    Should Be Equal As Strings                              ${my_account}[Name]              Rest Account Test
+    Should Be Equal As Strings                              ${my_account}[Name]              Rest Account Test            #validating the name match from my_account and the name we provided
 
     #Create contact
     ${my_contact}                          CreateRecord      Contact                         FirstName = Jane    LastName=Roberts      
@@ -34,10 +34,37 @@ Create New Account via REST API
     Set Suite Variable                     ${my_account}
     Set Suite Variable                     ${my_contact}
     
-Get Record Create
+Get Record Create Account
     [Documentation]                        Retrive the record created
     [tags]                                 REST API                                        GET
     
     ${new_account}=                        GetRecord        Account                         ${my_account}
     Should Be Equal As Strings                              ${new_account}[Name]            Rest Account Test
-    Log                                    ${new_account}          
+    Log                                    ${new_account}
+
+Get Contact Record using SOQl
+    #Jane % = Starts with
+    #%Jane = ends with
+    # %Jane% = contains
+    ${results}=                            QueryRecords      SELECT Id,FirstName,LastName FROM Contact WHERE Name LIKE 'Jane%'
+    Log                                    ${results}
+
+Verify from UI in salesforce
+    [Documentation]                        Valdiate data created using REST API through UI
+    [Tags]                                 Validation through UI
+
+    Appstate                               Home
+    LaunchApp                              Sales
+    ClickText                              Contacts
+    VerifyPageHeader                       Contacts
+    VerifyText                             New
+    VerifyText                             Jana Doe
+    ClickText                              Jana Doe
+
+    ClickText                              Details
+    VerifyField                            Name                     Jana Doe
+    VerifyField                            Email                    jana.doe@fake.com
+    VerifyField                            Account Name             TestCorp123    tag=a
+
+    # We'll take a screenshot to the log
+    LogScreenshot
